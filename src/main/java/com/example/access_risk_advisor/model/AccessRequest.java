@@ -19,6 +19,12 @@ public class AccessRequest {
     @NotBlank(message = "Time of request is required")
     private String timeOfRequest;
 
+    public AccessRequest(String username, String role, String requestedSystem) {
+        this.username = username;
+        this.role = role;
+        this.requestedSystem = requestedSystem;
+    }
+
     // Getters and Setters
     public int getId() {
         return id;
