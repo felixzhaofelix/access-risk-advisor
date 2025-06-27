@@ -7,14 +7,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Optional;
-
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import com.example.access_risk_advisor.service.RiskAssessmentService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -22,6 +17,48 @@ class AccessRequestControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Test
+    void testSubmitAccessRequest_ValidRequest_Returns200() throws Exception {
+        String validJson = """
+        {
+            "username": "jane",
+            "role": "Finance",
+            "requestedSystem": "Payroll",
+            "requestedBy": "admin",
+            "timeOfRequest": "2025-06-26T14:30:00"
+        }
+    """;
+
+        mockMvc.perform(post("/access-request")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(validJson))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.decision").value("approve"))
+                .andExpect(jsonPath("$.riskScore").value(0))
+                .andExpect(jsonPath("$.reason").value("Access appears normal."));
+    }
+
+    @Test
+    void testSubmitAccessRequest_HRDevOps_ReturnsFlagged() throws Exception {
+        String highRiskJson = """
+        {
+            "username": "alice",
+            "role": "HR",
+            "requestedSystem": "DevOps Monitoring",
+            "requestedBy": "alice",
+            "timeOfRequest": "2025-06-26T10:00:00"
+        }
+    """;
+
+        mockMvc.perform(post("/access-request")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(highRiskJson))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.decision").value("flag"))
+                .andExpect(jsonPath("$.riskScore").value(85))
+                .andExpect(jsonPath("$.reason").value("HR requesting DevOps system - unusual."));
+    }
 
     @Test
     void testSubmitAccessRequest_MissingFields_Returns400() throws Exception {
@@ -36,16 +73,5 @@ class AccessRequestControllerTest {
                 .andExpect(jsonPath("$.path").exists());
     }
 
-//    @Test
-//    void testGetRequestById_NotFound_Returns404() throws Exception {
-//        int nonexistentId = 999;
-//
-//        when(riskService.getRequestById(nonexistentId)).thenReturn(Optional.empty());
-//
-//        mockMvc.perform(get("/access-request/{id}", nonexistentId))
-//                .andExpect(status().isNotFound())
-//                .andExpect(jsonPath("$.message").value("Request not found"))
-//                .andExpect(jsonPath("$.timestamp").exists())
-//                .andExpect(jsonPath("$.path").exists());
-//    }
+
 }
