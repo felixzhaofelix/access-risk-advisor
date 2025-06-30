@@ -32,8 +32,14 @@ Its goal is to serve as one part of a larger IAM system with **clean separation 
     - **Access Request Evaluation** for risk evaluation logic
 -
     - **Reporting** for decision history and analytics
-- ⬜ An **extensible and pluggable** risk evaluation engine to allow custom rules
-- ⬜ A separate **API Gateway** (future) manages **authorization**
+- ⬜ An **extensible and pluggable** risk evaluation engine to allow:
+-
+    - Rule-based scoring with custom rules
+-
+    - Custom rules for scoring access requests
+-
+    - AI/ML models for advanced risk scoring
+- ⬜ A separate **API Gateway** that manages **authorization**
 - ⬜ A **client** runner app generating sample requests to consume the API
 - ⬜ Deployment can scale from local to cloud
 ---
