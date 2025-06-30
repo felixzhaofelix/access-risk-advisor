@@ -24,13 +24,18 @@ Access Risk Advisor is a lightweight API that simulates **risk scoring** for acc
 
 Its goal is to serve as one part of a larger IAM system with **clean separation of concerns**, where:
 
-- ✅ This service handles **risk evaluation**
+- ✅ This service handles **risk evaluation** with rule-based logic
+- ⬜ It contains three business components:
+-
+    - **Account Management** for company, user and role management
+-
+    - **Access Request Evaluation** for risk evaluation logic
+-
+    - **Reporting** for decision history and analytics
+- ⬜ An **extensible and pluggable** risk evaluation engine to allow custom rules
 - ⬜ A separate **API Gateway** (future) manages **authorization**
-- ⬜ A **frontend** or **client** consumes the API
+- ⬜ A **client** runner app generating sample requests to consume the API
 - ⬜ Deployment can scale from local to cloud
-
-Inspired by solution-style .NET architectures, the service is ready to grow into a multi-layered system with low coupling and clean interfaces.
-
 ---
 
 ## 📦 Features
@@ -72,7 +77,7 @@ Tests include:
 
 ⬜ Authorization layer (planned)
 
-⬜ Persistence layer (planned)
+✅ Persistence layer
 
 ## 🗂 Project Structure
 ```plain
@@ -80,6 +85,7 @@ access-risk-advisor/
 ├── controller/       # Exposes REST API
 ├── service/          # Risk evaluation logic
 ├── model/            # Request + response types
+├── repository/       # Data access
 ├── exception/        # Global error handling
 └── AccessRiskAdvisorApplication.java
 ```
@@ -89,11 +95,7 @@ access-risk-advisor/
 
 ⬜ AI/ML-powered risk engine
 
-⬜ Database integration (PostgreSQL, MongoDB, etc.)
-
 ⬜ Docker support
-
-⬜ Public deployment (Render, Fly.io, etc.)
 
 ⬜ OpenAPI spec publishing
 
@@ -102,4 +104,4 @@ MIT License (or adapt as needed)
 
 ## 👤 Author
 Built by Felix Zhao
-Designed for modular IAM development, security prototyping, and Spring Boot learning.
+Designed for modular IAM development and security prototyping
