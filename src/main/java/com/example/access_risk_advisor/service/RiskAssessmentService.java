@@ -2,15 +2,15 @@ package com.example.access_risk_advisor.service;
 
 import com.example.access_risk_advisor.model.AccessRequest;
 import com.example.access_risk_advisor.model.RiskAssessmentResult;
+import com.example.access_risk_advisor.model.account_management.User;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Service
 public class RiskAssessmentService {
@@ -22,7 +22,8 @@ public class RiskAssessmentService {
         int riskScore = 0;
         String reason = "Access appears normal.";
 
-        String role = request.getRole().toLowerCase();
+        User user = request.getUser();
+        String role = user.getRole().toLowerCase();
         String system = request.getRequestedSystem().toLowerCase();
 
         if (role.equals("hr") && system.contains("devops")) {
@@ -37,7 +38,7 @@ public class RiskAssessmentService {
         requests.add(request);
 
         logger.info("Access request assessed: user={}, system={}, decision={}, riskScore={}",
-                request.getUsername(), request.getRequestedSystem(), decision, riskScore);
+                user.getUsername(), request.getRequestedSystem(), decision, riskScore);
 
         return new RiskAssessmentResult(decision, riskScore, reason);
     }

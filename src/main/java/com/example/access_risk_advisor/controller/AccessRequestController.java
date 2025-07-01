@@ -4,13 +4,12 @@ import com.example.access_risk_advisor.model.AccessRequest;
 import com.example.access_risk_advisor.model.RiskAssessmentResult;
 import com.example.access_risk_advisor.service.RiskAssessmentService;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -39,7 +38,10 @@ public class AccessRequestController {
 
     @PostMapping
     public RiskAssessmentResult submitAccessRequest(@Valid @RequestBody AccessRequest request) {
-        logger.info("Received new access request from {} for {}", request.getUsername(), request.getRequestedSystem());
+        logger.info("Received new access request from {} for {}",
+                request.getUser().getUsername(),
+                request.getRequestedSystem());
+
         return riskService.assessRisk(request);
     }
 
@@ -54,5 +56,4 @@ public class AccessRequestController {
         }
         return removed ? "Deleted request " + id : "Request not found";
     }
-
 }
